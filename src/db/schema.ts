@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations } from 'drizzle-orm';
 import {
 	integer,
 	pgEnum,
@@ -7,34 +7,34 @@ import {
 	time,
 	timestamp,
 	uuid,
-} from "drizzle-orm/pg-core";
+} from 'drizzle-orm/pg-core';
 
-export const usersTable = pgTable("users", {
-	id: uuid("id").defaultRandom().primaryKey(),
+export const usersTable = pgTable('users', {
+	id: uuid('id').defaultRandom().primaryKey(),
 });
 
 export const usersTableRelations = relations(usersTable, ({ many }) => ({
 	usersToClinics: many(usersToClinicsTable),
 }));
 
-export const clinicsTable = pgTable("clinics", {
-	id: uuid("id").defaultRandom().primaryKey(),
-	name: text("name").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
+export const clinicsTable = pgTable('clinics', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	name: text('name').notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 });
 
-export const usersToClinicsTable = pgTable("users_to_clinics", {
-	userId: uuid("user_id")
+export const usersToClinicsTable = pgTable('users_to_clinics', {
+	userId: uuid('user_id')
 		.notNull()
 		.references(() => usersTable.id),
-	clinicId: uuid("clinic_id")
+	clinicId: uuid('clinic_id')
 		.notNull()
 		.references(() => clinicsTable.id),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 });
@@ -60,22 +60,22 @@ export const clinicsTableRelations = relations(clinicsTable, ({ many }) => ({
 	usersToClinics: many(usersToClinicsTable),
 }));
 
-export const doctorsTable = pgTable("doctors", {
-	id: uuid("id").defaultRandom().primaryKey(),
-	clinicId: uuid("clinic_id")
+export const doctorsTable = pgTable('doctors', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	clinicId: uuid('clinic_id')
 		.notNull()
-		.references(() => clinicsTable.id, { onDelete: "cascade" }),
-	name: text("name").notNull(),
-	avatarImageUrl: text("avatar_image_url"),
+		.references(() => clinicsTable.id, { onDelete: 'cascade' }),
+	name: text('name').notNull(),
+	avatarImageUrl: text('avatar_image_url'),
 	// 1 - Monday, 2 - Tuesday, 3 - Wednesday, 4 - Thursday, 5 - Friday, 6 - Saturday, 0 - Sunday
-	availableFromWeekDay: integer("available_from_week_day").notNull(),
-	availableToWeekDay: integer("available_to_week_day").notNull(),
-	availableFromTime: time("available_from_time").notNull(),
-	availableToTime: time("available_to_time").notNull(),
-	specialty: text("specialty").notNull(),
-	appointmentPriceInCents: integer("appointment_price_in_cents").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
+	availableFromWeekDay: integer('available_from_week_day').notNull(),
+	availableToWeekDay: integer('available_to_week_day').notNull(),
+	availableFromTime: time('available_from_time').notNull(),
+	availableToTime: time('available_to_time').notNull(),
+	specialty: text('specialty').notNull(),
+	appointmentPriceInCents: integer('appointment_price_in_cents').notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 });
@@ -91,24 +91,24 @@ export const doctorsTableRelations = relations(
 	}),
 );
 
-export const patientSexEnum = pgEnum("patient_sex", ["male", "female"]);
-export const patientStatusEnum = pgEnum("patient_status", [
-	"active",
-	"inactive",
+export const patientSexEnum = pgEnum('patient_sex', ['male', 'female']);
+export const patientStatusEnum = pgEnum('patient_status', [
+	'active',
+	'inactive',
 ]);
 
-export const patientsTable = pgTable("patients", {
-	id: uuid("id").defaultRandom().primaryKey(),
-	clinicId: uuid("clinic_id")
+export const patientsTable = pgTable('patients', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	clinicId: uuid('clinic_id')
 		.notNull()
-		.references(() => clinicsTable.id, { onDelete: "cascade" }),
-	name: text("name").notNull(),
-	email: text("email").notNull().unique(),
-	phoneNumber: text("phone_number").notNull(),
-	sex: patientSexEnum("sex").notNull(),
-	status: patientStatusEnum("status").notNull(),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
+		.references(() => clinicsTable.id, { onDelete: 'cascade' }),
+	name: text('name').notNull(),
+	email: text('email').notNull().unique(),
+	phoneNumber: text('phone_number').notNull(),
+	sex: patientSexEnum('sex').notNull(),
+	status: patientStatusEnum('status').notNull(),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 });
@@ -124,20 +124,20 @@ export const patientsTableRelations = relations(
 	}),
 );
 
-export const appointmentsTable = pgTable("appointments", {
-	id: uuid("id").defaultRandom().primaryKey(),
-	date: timestamp("date").notNull(),
-	clinicId: uuid("clinic_id")
+export const appointmentsTable = pgTable('appointments', {
+	id: uuid('id').defaultRandom().primaryKey(),
+	date: timestamp('date').notNull(),
+	clinicId: uuid('clinic_id')
 		.notNull()
-		.references(() => clinicsTable.id, { onDelete: "cascade" }),
-	patiendId: uuid("patiend_id")
+		.references(() => clinicsTable.id, { onDelete: 'cascade' }),
+	patiendId: uuid('patiend_id')
 		.notNull()
-		.references(() => patientsTable.id, { onDelete: "cascade" }),
-	doctorId: uuid("doctor_id")
+		.references(() => patientsTable.id, { onDelete: 'cascade' }),
+	doctorId: uuid('doctor_id')
 		.notNull()
-		.references(() => doctorsTable.id, { onDelete: "cascade" }),
-	createdAt: timestamp("created_at").defaultNow().notNull(),
-	updatedAt: timestamp("updated_at")
+		.references(() => doctorsTable.id, { onDelete: 'cascade' }),
+	createdAt: timestamp('created_at').defaultNow().notNull(),
+	updatedAt: timestamp('updated_at')
 		.defaultNow()
 		.$onUpdate(() => new Date()),
 });
