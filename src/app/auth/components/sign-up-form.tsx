@@ -17,12 +17,20 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LogInIcon } from 'lucide-react';
+import { Loader2Icon, SaveIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+	name: z
+		.string()
+		.trim()
+		.nonempty({ message: 'Nome é obrigatório' })
+		.min(3, { message: 'Nome deve ter pelo menos 3 caracteres' }),
 	email: z
 		.string()
 		.trim()
@@ -36,17 +44,41 @@ const loginSchema = z.object({
 		.min(8, { message: 'A Senha deve ter pelo menos 8 caracteres' }),
 });
 
-export const SignInForm = () => {
-	const form = useForm<z.infer<typeof loginSchema>>({
-		resolver: zodResolver(loginSchema),
+export const SignUpForm = () => {
+	const router = useRouter();
+
+	const form = useForm<z.infer<typeof registerSchema>>({
+		resolver: zodResolver(registerSchema),
 		defaultValues: {
+			name: '',
 			email: '',
 			password: '',
 		},
 	});
 
-	const onSubmit = (values: z.infer<typeof loginSchema>) => {
-		console.log(values);
+	const onSubmit = async (values: z.infer<typeof registerSchema>) => {
+		await authClient.signUp.email(
+			{
+				email: values.email,
+				password: values.password,
+				name: values.name,
+			},
+			{
+				onSuccess: () => {
+					router.push('/dashboard');
+					toast.success('Usuário cadastrado com sucesso');
+				},
+				onError: (error) => {
+					console.log(error.error);
+					const message = error.error.message;
+					if (error.error.code === 'USER_ALREADY_EXISTS') {
+						toast.error('Usuário já cadastrado no sistema');
+						return;
+					}
+					toast.error(message);
+				},
+			},
+		);
 	};
 
 	return (
@@ -57,13 +89,30 @@ export const SignInForm = () => {
 					className='space-y-4'
 				>
 					<CardHeader>
-						<CardTitle>Login</CardTitle>
+						<CardTitle>Criar conta</CardTitle>
 						<CardDescription>
-							Faça login para continuar.
+							Crie uma conta para acessar o sistema.
 						</CardDescription>
 					</CardHeader>
 
 					<CardContent className='space-y-4'>
+						<FormField
+							control={form.control}
+							name='name'
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Nome</FormLabel>
+									<FormControl>
+										<Input
+											placeholder='Digite seu Nome Completo'
+											{...field}
+										/>
+									</FormControl>
+									<FormMessage className='-mt-1 text-xs' />
+								</FormItem>
+							)}
+						/>
+
 						<FormField
 							control={form.control}
 							name='email'
@@ -101,8 +150,22 @@ export const SignInForm = () => {
 					</CardContent>
 
 					<CardFooter className='flex justify-end'>
-						<Button className='w-full' type='submit'>
-							<LogInIcon /> Entrar
+						<Button
+							className='w-full'
+							type='submit'
+							disabled={form.formState.isSubmitting}
+						>
+							{form.formState.isSubmitting ? (
+								<span className='flex items-center gap-2'>
+									<Loader2Icon className='h-5 w-5 animate-spin' />
+									<p>Aguarde...</p>
+								</span>
+							) : (
+								<span className='flex items-center gap-2'>
+									<SaveIcon />
+									<p>Criar Conta</p>
+								</span>
+							)}
 						</Button>
 					</CardFooter>
 				</form>

@@ -17,17 +17,13 @@ import {
 	FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SaveIcon } from 'lucide-react';
+import { LogInIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-const registerSchema = z.object({
-	name: z
-		.string()
-		.trim()
-		.nonempty({ message: 'Nome é obrigatório' })
-		.min(3, { message: 'Nome deve ter pelo menos 3 caracteres' }),
+const loginSchema = z.object({
 	email: z
 		.string()
 		.trim()
@@ -41,18 +37,21 @@ const registerSchema = z.object({
 		.min(8, { message: 'A Senha deve ter pelo menos 8 caracteres' }),
 });
 
-export const SignUpForm = () => {
-	const form = useForm<z.infer<typeof registerSchema>>({
-		resolver: zodResolver(registerSchema),
+export const SignInForm = () => {
+	const form = useForm<z.infer<typeof loginSchema>>({
+		resolver: zodResolver(loginSchema),
 		defaultValues: {
-			name: '',
 			email: '',
 			password: '',
 		},
 	});
 
-	const onSubmit = (values: z.infer<typeof registerSchema>) => {
-		console.log(values);
+	const onSubmit = async (values: z.infer<typeof loginSchema>) => {
+		await authClient.signIn.email({
+			email: values.email,
+			password: values.password,
+			callbackURL: '/dashboard',
+		});
 	};
 
 	return (
@@ -63,30 +62,13 @@ export const SignUpForm = () => {
 					className='space-y-4'
 				>
 					<CardHeader>
-						<CardTitle>Criar conta</CardTitle>
+						<CardTitle>Login</CardTitle>
 						<CardDescription>
-							Crie uma conta para acessar o sistema.
+							Faça login para continuar.
 						</CardDescription>
 					</CardHeader>
 
 					<CardContent className='space-y-4'>
-						<FormField
-							control={form.control}
-							name='name'
-							render={({ field }) => (
-								<FormItem>
-									<FormLabel>Nome</FormLabel>
-									<FormControl>
-										<Input
-											placeholder='Digite seu Nome Completo'
-											{...field}
-										/>
-									</FormControl>
-									<FormMessage className='-mt-1 text-xs' />
-								</FormItem>
-							)}
-						/>
-
 						<FormField
 							control={form.control}
 							name='email'
@@ -125,7 +107,7 @@ export const SignUpForm = () => {
 
 					<CardFooter className='flex justify-end'>
 						<Button className='w-full' type='submit'>
-							<SaveIcon /> Criar Conta
+							<LogInIcon /> Entrar
 						</Button>
 					</CardFooter>
 				</form>
