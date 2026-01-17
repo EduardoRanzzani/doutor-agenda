@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 
 import { Loader2Icon, SaveIcon } from 'lucide-react';
-import { ClinicForm } from './components/form';
+import { ClinicForm } from './_components/form';
 
 const ClinicFormPage = () => {
 	return (
