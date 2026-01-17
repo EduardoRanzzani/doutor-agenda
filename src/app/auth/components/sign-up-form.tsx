@@ -69,11 +69,9 @@ export const SignUpForm = () => {
 					toast.success('Usuário cadastrado com sucesso');
 				},
 				onError: (error) => {
-					console.log(error.error);
-					const message = error.error.message;
+					let message = error.error.message;
 					if (error.error.code === 'USER_ALREADY_EXISTS') {
-						toast.error('Usuário já cadastrado no sistema');
-						return;
+						message = 'Usuário já cadastrado no sistema';
 					}
 					toast.error(message);
 				},
@@ -156,14 +154,10 @@ export const SignUpForm = () => {
 							disabled={form.formState.isSubmitting}
 						>
 							{form.formState.isSubmitting ? (
-								<span className='flex items-center gap-2'>
-									<Loader2Icon className='h-5 w-5 animate-spin' />
-									<p>Aguarde...</p>
-								</span>
+								<Loader2Icon className='h-5 w-5 animate-spin' />
 							) : (
 								<span className='flex items-center gap-2'>
-									<SaveIcon />
-									<p>Criar Conta</p>
+									<SaveIcon /> Criar Conta
 								</span>
 							)}
 						</Button>

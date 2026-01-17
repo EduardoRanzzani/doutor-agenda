@@ -19,8 +19,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LogInIcon } from 'lucide-react';
+import { Loader, Loader2Icon, LogInIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 const loginSchema = z.object({
@@ -38,6 +40,8 @@ const loginSchema = z.object({
 });
 
 export const SignInForm = () => {
+	const router = useRouter();
+
 	const form = useForm<z.infer<typeof loginSchema>>({
 		resolver: zodResolver(loginSchema),
 		defaultValues: {
@@ -47,11 +51,24 @@ export const SignInForm = () => {
 	});
 
 	const onSubmit = async (values: z.infer<typeof loginSchema>) => {
-		await authClient.signIn.email({
-			email: values.email,
-			password: values.password,
-			callbackURL: '/dashboard',
-		});
+		await authClient.signIn.email(
+			{
+				email: values.email,
+				password: values.password,
+			},
+			{
+				onSuccess: () => {
+					router.push('/dashboard');
+				},
+				onError: (error) => {
+					let message = error.error.message;
+					if (error.error.code === 'INVALID_EMAIL_OR_PASSWORD') {
+						message = 'Usuário e/ou senha inválidos';
+					}
+					toast.error(message);
+				},
+			},
+		);
 	};
 
 	return (
@@ -106,8 +123,18 @@ export const SignInForm = () => {
 					</CardContent>
 
 					<CardFooter className='flex justify-end'>
-						<Button className='w-full' type='submit'>
-							<LogInIcon /> Entrar
+						<Button
+							className='w-full'
+							type='submit'
+							disabled={form.formState.isSubmitting}
+						>
+							{form.formState.isSubmitting ? (
+								<Loader2Icon className='h-5 w-5 animate-spin' />
+							) : (
+								<span className='flex items-center gap-2'>
+									<LogInIcon /> Entrar
+								</span>
+							)}
 						</Button>
 					</CardFooter>
 				</form>
