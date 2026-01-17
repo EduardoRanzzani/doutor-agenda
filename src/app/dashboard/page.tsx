@@ -1,10 +1,11 @@
+import { db } from '@/db';
+import { usersToClinicsTable } from '@/db/schema';
 import { auth } from '@/lib/auth';
+import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { SignOutButton } from './components/sign-out-button';
-import { db } from '@/db';
-import { eq } from 'drizzle-orm';
-import { usersToClinicsTable } from '@/db/schema';
+import Image from 'next/image';
 
 const DashboardPage = async () => {
 	const session = await auth.api.getSession({
@@ -12,6 +13,7 @@ const DashboardPage = async () => {
 	});
 
 	if (!session?.user) redirect('/auth');
+	console.log(session.user.image);
 
 	// Pegar as clinicas do usuário
 	const clinics = await db.query.usersToClinicsTable.findMany({
@@ -22,9 +24,19 @@ const DashboardPage = async () => {
 
 	return (
 		<div className='flex flex-col gap-4 p-4'>
-			<h1 className='text-xl font-semibold'>
-				Boas vindas {session?.user.name}
-			</h1>
+			<div className='flex w-full items-end gap-4'>
+				<Image
+					src={session?.user?.image || '/default-avatar.png'}
+					alt='Imagem do Usuário'
+					width={100}
+					height={100}
+					className='h-20 w-20 rounded-lg border border-zinc-500'
+					draggable={false}
+				/>
+				<h1 className='text-xl font-semibold'>
+					Boas vindas {session?.user.name}
+				</h1>
+			</div>
 
 			<SignOutButton />
 		</div>
