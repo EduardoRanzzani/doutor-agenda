@@ -66,12 +66,11 @@ export const SignUpForm = () => {
 			{
 				onSuccess: () => {
 					router.push('/dashboard');
-					toast.success('Usuário cadastrado com sucesso');
 				},
 				onError: (error) => {
-					let message = error.error.message;
+					let message = 'Erro ao criar conta';
 					if (error.error.code === 'USER_ALREADY_EXISTS') {
-						message = 'Usuário já cadastrado no sistema';
+						message = 'E-mail já cadastrado no sistema';
 					}
 					toast.error(message);
 				},
