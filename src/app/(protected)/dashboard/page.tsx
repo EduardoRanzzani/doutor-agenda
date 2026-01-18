@@ -12,14 +12,7 @@ const DashboardPage = async () => {
 	});
 
 	if (!session?.user) redirect('/auth');
-	console.log(session.user.image);
-
-	// Pegar as clinicas do usuário
-	const clinics = await db.query.usersToClinicsTable.findMany({
-		where: eq(usersToClinicsTable.userId, session.user.id),
-	});
-
-	if (clinics.length === 0) redirect('/clinic-form');
+	if (!session.user.clinic) redirect('/clinic-form');
 
 	return (
 		<div className='flex flex-col gap-4 p-4'>

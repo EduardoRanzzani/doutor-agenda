@@ -15,8 +15,8 @@
 
 ## Roteiro Aula 03:
 
-- [] Sidebar e Route Groups
-- [] Página de médicos
+- [x] Sidebar e Route Groups
+- [x] Página de médicos
 - [] Criação de médicos e NextSafeAction
 - [] Listagem de médicos
 - [] Atualização de médicos
