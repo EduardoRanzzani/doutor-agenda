@@ -1,9 +1,7 @@
+import { customSessionClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/react';
+import { auth } from './auth';
 
-export const authClient = createAuthClient();
-
-const signIn = async () => {
-	const data = await authClient.signIn.social({
-		provider: 'google',
-	});
-};
+export const authClient = createAuthClient({
+	plugins: [customSessionClient<typeof auth>()],
+});

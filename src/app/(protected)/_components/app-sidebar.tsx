@@ -1,3 +1,5 @@
+'use client';
+
 import {
 	CalendarIcon,
 	LayoutDashboardIcon,
@@ -23,10 +25,13 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	SidebarMenuSubButton,
 } from '@/components/ui/sidebar';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SignOutButton } from '../dashboard/_components/sign-out-button';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { authClient } from '@/lib/auth-client';
 
 // Menu items.
 const items = [
@@ -52,9 +57,13 @@ const items = [
 	},
 ];
 
-export function AppSidebar() {
+export const AppSidebar = ({
+	...props
+}: React.ComponentProps<typeof Sidebar>) => {
+	const session = authClient.useSession();
+
 	return (
-		<Sidebar>
+		<Sidebar collapsible='offcanvas' {...props}>
 			<SidebarHeader className='border-b p-4'>
 				<Image
 					src={'/logo.svg'}
@@ -90,12 +99,22 @@ export function AppSidebar() {
 					<SidebarMenuItem>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
-								<Button
-									variant='outline'
-									className='w-full text-left'
+								<SidebarMenuButton
+									size='lg'
+									className='rounded-lg'
 								>
-									Clínica
-								</Button>
+									<Avatar>
+										<AvatarFallback>ELR</AvatarFallback>
+									</Avatar>
+									<div className='-space-y-1'>
+										<h1 className='font-bold'>
+											{session.data?.user.name}
+										</h1>
+										<p className='text-muted-foreground text-xs'>
+											{session.data?.user.email}
+										</p>
+									</div>
+								</SidebarMenuButton>
 							</DropdownMenuTrigger>
 							<DropdownMenuContent>
 								<DropdownMenuItem asChild>
@@ -108,4 +127,6 @@ export function AppSidebar() {
 			</SidebarFooter>
 		</Sidebar>
 	);
-}
+};
+
+export default AppSidebar;

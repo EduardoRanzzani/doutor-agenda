@@ -3,9 +3,8 @@ import { usersToClinicsTable } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { SignOutButton } from './_components/sign-out-button';
 import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
 const DashboardPage = async () => {
 	const session = await auth.api.getSession({
@@ -37,8 +36,6 @@ const DashboardPage = async () => {
 					Boas vindas {session?.user.name}
 				</h1>
 			</div>
-
-			<SignOutButton />
 		</div>
 	);
 };
