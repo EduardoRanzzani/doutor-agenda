@@ -11,7 +11,7 @@ const ProtectedLayout = ({ children }: { children: ReactNode }) => {
 		<SidebarProvider>
 			<AppSidebar variant='inset' />
 			<SidebarInset>
-				<main>
+				<main className='w-full'>
 					<SidebarTrigger />
 					{children}
 				</main>

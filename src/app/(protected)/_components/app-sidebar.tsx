@@ -2,6 +2,7 @@
 
 import {
 	CalendarIcon,
+	ChevronRightIcon,
 	LayoutDashboardIcon,
 	StethoscopeIcon,
 	UsersRoundIcon,
@@ -32,6 +33,7 @@ import Link from 'next/link';
 import { SignOutButton } from '../dashboard/_components/sign-out-button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { authClient } from '@/lib/auth-client';
+import { usePathname } from 'next/navigation';
 
 // Menu items.
 const items = [
@@ -42,12 +44,12 @@ const items = [
 	},
 	{
 		title: 'Agendamentos',
-		url: 'appointments',
+		url: '/appointments',
 		icon: CalendarIcon,
 	},
 	{
 		title: 'Médicos',
-		url: 'doctors',
+		url: '/doctors',
 		icon: StethoscopeIcon,
 	},
 	{
@@ -61,6 +63,7 @@ export const AppSidebar = ({
 	...props
 }: React.ComponentProps<typeof Sidebar>) => {
 	const session = authClient.useSession();
+	const pathname = usePathname();
 
 	return (
 		<Sidebar collapsible='offcanvas' {...props}>
@@ -79,10 +82,25 @@ export const AppSidebar = ({
 						<SidebarMenu>
 							{items.map((item) => (
 								<SidebarMenuItem key={item.title}>
-									<SidebarMenuButton asChild>
-										<Link href={item.url}>
-											<item.icon />
-											<span>{item.title}</span>
+									<SidebarMenuButton
+										asChild
+										isActive={pathname === item.url}
+									>
+										<Link
+											href={item.url}
+											className='flex justify-between'
+										>
+											<span className='flex items-center gap-2'>
+												<item.icon className='h-5 w-5' />
+												<p
+													className={`${pathname === item.url && 'font-bold'}`}
+												>
+													{item.title}
+												</p>
+											</span>
+											{pathname === item.url && (
+												<ChevronRightIcon />
+											)}
 										</Link>
 									</SidebarMenuButton>
 								</SidebarMenuItem>
