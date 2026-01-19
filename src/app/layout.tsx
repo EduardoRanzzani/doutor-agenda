@@ -1,3 +1,4 @@
+import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
 import type { Metadata } from 'next';
@@ -20,10 +21,17 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang='en'>
-			<body className={`${poppins.className} dark antialiased`}>
-				<Toaster richColors position='bottom-center' />
-				{children}
+		<html lang='en' suppressHydrationWarning>
+			<body className={`${poppins.className} antialiased`}>
+				<ThemeProvider
+					attribute='class'
+					defaultTheme='system'
+					enableSystem
+					disableTransitionOnChange
+				>
+					<Toaster richColors position='bottom-center' />
+					{children}
+				</ThemeProvider>
 			</body>
 		</html>
 	);

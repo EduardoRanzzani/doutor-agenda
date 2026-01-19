@@ -1,3 +1,11 @@
+import {
+	PageContainer,
+	PageContent,
+	PageDescription,
+	PageHeader,
+	PageHeaderContent,
+	PageTitle,
+} from '@/components/ui/page-container';
 import { db } from '@/db';
 import { usersToClinicsTable } from '@/db/schema';
 import { auth } from '@/lib/auth';
@@ -15,21 +23,20 @@ const DashboardPage = async () => {
 	if (!session.user.clinic) redirect('/clinic-form');
 
 	return (
-		<div className='flex flex-col gap-4 p-4'>
-			<div className='flex w-full items-end gap-4'>
-				<Image
-					src={session?.user?.image || '/default-avatar.png'}
-					alt='Imagem do Usuário'
-					width={100}
-					height={100}
-					className='h-20 w-20 rounded-lg border border-zinc-500'
-					draggable={false}
-				/>
-				<h1 className='text-xl font-semibold'>
-					Boas vindas {session?.user.name}
-				</h1>
-			</div>
-		</div>
+		<PageContainer>
+			<PageHeader>
+				<PageHeaderContent>
+					<PageTitle>Dashboard</PageTitle>
+					<PageDescription>
+						Acesse uma visão detalhada das métricas e atividades de
+						pacientes
+					</PageDescription>
+				</PageHeaderContent>
+			</PageHeader>
+			<PageContent>
+				<h1>{session?.user.name}</h1>
+			</PageContent>
+		</PageContainer>
 	);
 };
 
