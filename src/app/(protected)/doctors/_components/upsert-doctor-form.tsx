@@ -35,6 +35,7 @@ import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { medicalSpecialties } from '../_constants';
+import { useEffect } from 'react';
 
 const formSchema = z
 	.object({
@@ -73,6 +74,7 @@ interface UpsertDoctorFormProps {
 
 const UpsertDoctorForm = ({ onSuccess, doctor }: UpsertDoctorFormProps) => {
 	const form = useForm<z.infer<typeof formSchema>>({
+		shouldUnregister: true,
 		resolver: zodResolver(formSchema),
 		defaultValues: {
 			name: doctor?.name ?? '',
@@ -282,8 +284,8 @@ const UpsertDoctorForm = ({ onSuccess, doctor }: UpsertDoctorFormProps) => {
 
 	const upsertDoctorAction = useAction(upsertDoctor, {
 		onSuccess: () => {
-			toast.success('Médico adicionado com sucesso!');
 			onSuccess?.();
+			toast.success('Médico salvo com sucesso!');
 		},
 		onError: () => {
 			toast.error('Ocorreu um erro ao adicionar o médico');
@@ -575,7 +577,7 @@ const UpsertDoctorForm = ({ onSuccess, doctor }: UpsertDoctorFormProps) => {
 					<DialogFooter>
 						<Button
 							type='submit'
-							className='w-full'
+							className={`w-full`}
 							disabled={upsertDoctorAction.isPending}
 						>
 							{upsertDoctorAction.isPending ? (

@@ -3,7 +3,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
 	DropdownMenu,
 	DropdownMenuContent,
-	DropdownMenuGroup,
 	DropdownMenuItem,
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
@@ -15,12 +14,7 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from '@/components/ui/sidebar';
-import {
-	AlertCircleIcon,
-	CreditCardIcon,
-	EllipsisVerticalIcon,
-	UserIcon,
-} from 'lucide-react';
+import { EllipsisVerticalIcon } from 'lucide-react';
 import { SignOutButton } from '../dashboard/_components/sign-out-button';
 export function NavUser({
 	user,
@@ -102,7 +96,7 @@ export function NavUser({
 							</div>
 						</DropdownMenuLabel>
 						<DropdownMenuSeparator />
-						<DropdownMenuGroup>
+						{/* <DropdownMenuGroup>
 							<DropdownMenuItem>
 								<UserIcon />
 								Account
@@ -115,8 +109,8 @@ export function NavUser({
 								<AlertCircleIcon />
 								Notifications
 							</DropdownMenuItem>
-						</DropdownMenuGroup>
-						<DropdownMenuSeparator />
+						</DropdownMenuGroup> 
+						<DropdownMenuSeparator /> */}
 
 						<DropdownMenuItem asChild>
 							<SignOutButton />

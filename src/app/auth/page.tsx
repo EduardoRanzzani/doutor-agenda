@@ -14,9 +14,9 @@ const AuthenticationPage = async () => {
 	if (session?.user) redirect('/dashboard');
 
 	return (
-		<div className='flex h-screen w-screen items-center justify-center'>
+		<div className='bg-muted flex h-screen w-screen items-center justify-center'>
 			<Tabs defaultValue='login' className='w-100'>
-				<TabsList className='grid w-full grid-cols-2'>
+				<TabsList className='grid w-full grid-cols-2 border'>
 					<TabsTrigger value='login'>Login</TabsTrigger>
 					<TabsTrigger value='register'>Criar Conta</TabsTrigger>
 				</TabsList>
