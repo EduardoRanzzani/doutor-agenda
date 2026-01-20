@@ -5,9 +5,9 @@ import { auth } from '@/lib/auth';
 import { actionClient } from '@/lib/next-safe-action';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import { revalidatePath } from 'next/cache';
 import { headers } from 'next/headers';
 import { upsertDoctorSchema } from './schema';
-import { revalidatePath } from 'next/cache';
 
 dayjs.extend(utc);
 
@@ -16,9 +16,6 @@ export const upsertDoctor = actionClient
 	.action(async ({ parsedInput }) => {
 		const availableFromTime = parsedInput.availableFromTime; // 08:00:00 -> 12:00:00
 		const availableToTime = parsedInput.availableToTime; // 18:00:00 -> 22:00:00
-
-		console.log('availableFromTime', availableFromTime);
-		console.log('availableToTime', availableToTime);
 
 		const availableFromTimeUTC = dayjs()
 			.set('hour', parseInt(availableFromTime.split(':')[0]))
@@ -32,9 +29,6 @@ export const upsertDoctor = actionClient
 			.set('second', parseInt(availableToTime.split(':')[2] ?? '00'))
 			.utc()
 			.format('HH:mm:ss');
-
-		console.log('availableFromTimeUTC', availableFromTimeUTC);
-		console.log('availableToTimeUTC', availableToTimeUTC);
 
 		const session = await auth.api.getSession({
 			headers: await headers(),

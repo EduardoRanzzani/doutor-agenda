@@ -13,15 +13,19 @@ import { Separator } from '@/components/ui/separator';
 import { doctorsTable } from '@/db/schema';
 import { formatCurrencyInCents } from '@/helpers/currency';
 import { AvatarFallback } from '@radix-ui/react-avatar';
-import { CalendarIcon, ClockIcon, DollarSignIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, DollarSignIcon, EyeIcon } from 'lucide-react';
 import { getAvailability } from '../_helpers/availability';
 import UpsertDoctorForm from './upsert-doctor-form';
+import { useState } from 'react';
 
 interface DoctorCardProps {
 	doctor: typeof doctorsTable.$inferSelect;
 }
 
 export const DoctorCard = ({ doctor }: DoctorCardProps) => {
+	const [isUpsertDoctorDialogOpen, setIsUpsertDoctorDialogOpen] =
+		useState<boolean>(false);
+
 	const names = doctor.name.trim().split(' ');
 	const doctorInitials = (
 		names.length > 1
@@ -65,11 +69,24 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
 			</CardContent>
 			<Separator />
 			<CardFooter>
-				<Dialog>
+				<Dialog
+					open={isUpsertDoctorDialogOpen}
+					onOpenChange={setIsUpsertDoctorDialogOpen}
+				>
 					<DialogTrigger asChild>
-						<Button className='w-full'>Ver detalhes</Button>
+						<Button className='w-full'>
+							<EyeIcon /> Ver detalhes
+						</Button>
 					</DialogTrigger>
-					<UpsertDoctorForm />
+					<UpsertDoctorForm
+						doctor={{
+							...doctor,
+							availableFromTime:
+								availability.from.format('HH:mm'),
+							availableToTime: availability.to.format('HH:mm'),
+						}}
+						onSuccess={() => setIsUpsertDoctorDialogOpen(false)}
+					/>
 				</Dialog>
 			</CardFooter>
 		</Card>

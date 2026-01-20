@@ -10,7 +10,7 @@ import {
 import { db } from '@/db';
 import { doctorsTable } from '@/db/schema';
 import { auth } from '@/lib/auth';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import AddDoctorButton from './_components/add-doctor-button';
@@ -26,6 +26,7 @@ const DoctorsPage = async () => {
 
 	const doctors = await db.query.doctorsTable.findMany({
 		where: eq(doctorsTable.clinicId, session.user.clinic.id),
+		orderBy: asc(doctorsTable.createdAt),
 	});
 
 	return (
