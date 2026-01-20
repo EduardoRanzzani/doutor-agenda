@@ -1,4 +1,5 @@
 'use client';
+import { upsertDoctor } from '@/actions/upsert-doctor';
 import { Button } from '@/components/ui/button';
 import {
 	DialogContent,
@@ -27,8 +28,10 @@ import {
 } from '@/components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2Icon, SaveIcon } from 'lucide-react';
+import { useAction } from 'next-safe-action/hooks';
 import { useForm } from 'react-hook-form';
 import { NumericFormat } from 'react-number-format';
+import { toast } from 'sonner';
 import { z } from 'zod';
 import { medicalSpecialties } from '../_constants';
 
@@ -62,7 +65,11 @@ const formSchema = z
 		},
 	);
 
-const UpsertDoctorForm = () => {
+interface UpsertDoctorFormProps {
+	onSuccess?: () => void;
+}
+
+const UpsertDoctorForm = ({ onSuccess }: UpsertDoctorFormProps) => {
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -268,12 +275,27 @@ const UpsertDoctorForm = () => {
 		},
 	];
 
+	const upsertDoctorAction = useAction(upsertDoctor, {
+		onSuccess: () => {
+			toast.success('Médico adicionado com sucesso!');
+			onSuccess?.();
+		},
+		onError: () => {
+			toast.error('Ocorreu um erro ao adicionar o médico');
+		},
+	});
+
 	const onSubmit = (values: z.infer<typeof formSchema>) => {
-		console.log(values);
+		upsertDoctorAction.execute({
+			...values,
+			availableFromWeekDay: parseInt(values.availableFromWeekDay),
+			availableToWeekDay: parseInt(values.availableToWeekDay),
+			appointmentPriceInCents: values.appointmentPrice * 100,
+		});
 	};
 
 	return (
-		<DialogContent>
+		<DialogContent onInteractOutside={(e) => e.preventDefault()}>
 			<Form {...form}>
 				<form
 					onSubmit={form.handleSubmit(onSubmit)}
@@ -542,9 +564,9 @@ const UpsertDoctorForm = () => {
 						<Button
 							type='submit'
 							className='w-full'
-							disabled={form.formState.isSubmitting}
+							disabled={upsertDoctorAction.isPending}
 						>
-							{form.formState.isSubmitting ? (
+							{upsertDoctorAction.isPending ? (
 								<Loader2Icon className='h-5 w-5 animate-spin' />
 							) : (
 								<>

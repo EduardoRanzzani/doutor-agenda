@@ -3,17 +3,20 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { PlusIcon } from 'lucide-react';
 import UpsertDoctorForm from './upsert-doctor-form';
+import { useState } from 'react';
 
 const AddDoctorButton = () => {
+	const [isOpen, setIsOpen] = useState<boolean>(false);
+
 	return (
-		<Dialog modal>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
 				<Button className='w-full md:w-60'>
 					<PlusIcon />
 					Novo Médico
 				</Button>
 			</DialogTrigger>
-			<UpsertDoctorForm />
+			<UpsertDoctorForm onSuccess={() => setIsOpen(false)} />
 		</Dialog>
 	);
 };
