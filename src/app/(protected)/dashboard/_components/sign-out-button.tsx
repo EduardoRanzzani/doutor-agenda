@@ -25,7 +25,11 @@ export const SignOutButton = () => {
 	};
 
 	return (
-		<Button className='w-60' disabled={loading} onClick={signOut}>
+		<Button
+			className='flex w-full items-center justify-start gap-2'
+			disabled={loading}
+			onClick={signOut}
+		>
 			{loading ? (
 				<Loader2Icon className='h-5 w-5 animate-spin' />
 			) : (

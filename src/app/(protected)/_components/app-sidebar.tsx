@@ -37,6 +37,7 @@ import { usePathname } from 'next/navigation';
 import { SignOutButton } from '../dashboard/_components/sign-out-button';
 import { useEffect, useState } from 'react';
 import { AvatarImage } from '@radix-ui/react-avatar';
+import { NavUser } from './nav-user';
 
 // Menu items.
 const items = [
@@ -87,10 +88,9 @@ export const AppSidebar = ({
 
 	// Define qual logo usar (default para o light se ainda não montou)
 	const logoSrc =
-		mounted && resolvedTheme === 'dark' ? '/logo-dark.svg' : '/logo.svg';
-
-	console.log(resolvedTheme);
-	console.log(logoSrc);
+		mounted && resolvedTheme === 'dark'
+			? '/logo-dark.svg'
+			: '/logo-new.svg';
 
 	return (
 		<Sidebar collapsible='offcanvas' {...props}>
@@ -169,39 +169,7 @@ export const AppSidebar = ({
 				</SidebarGroup>
 			</SidebarContent>
 			<SidebarFooter>
-				<SidebarMenu>
-					<SidebarMenuItem>
-						<DropdownMenu>
-							<DropdownMenuTrigger asChild>
-								<SidebarMenuButton
-									size='lg'
-									className='rounded-lg'
-								>
-									<Avatar>
-										<AvatarImage
-											src={session.data?.user.image!}
-											alt='Avatar do usuário'
-										/>
-										<AvatarFallback>ELR</AvatarFallback>
-									</Avatar>
-									<div className='-space-y-1'>
-										<h1 className='font-bold'>
-											{session.data?.user.name}
-										</h1>
-										<p className='text-muted-foreground text-xs'>
-											{session.data?.user.email}
-										</p>
-									</div>
-								</SidebarMenuButton>
-							</DropdownMenuTrigger>
-							<DropdownMenuContent>
-								<DropdownMenuItem asChild>
-									<SignOutButton />
-								</DropdownMenuItem>
-							</DropdownMenuContent>
-						</DropdownMenu>
-					</SidebarMenuItem>
-				</SidebarMenu>
+				<NavUser user={session.data?.user} />
 			</SidebarFooter>
 		</Sidebar>
 	);
