@@ -1,21 +1,7 @@
 'use client';
-
-import { deletePatient } from '@/actions/delete-patient';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Button } from "@/components/ui/button";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 import { patientsTable } from '@/db/schema';
-import { DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu';
 import { ColumnDef } from '@tanstack/react-table';
-import { BanIcon, CheckIcon, MoreVerticalIcon, PenSquareIcon, TrashIcon } from 'lucide-react';
-import { useAction } from 'next-safe-action/hooks';
-import { toast } from 'sonner';
+import { PatientTableActions } from './table-actions';
 
 type Patient = typeof patientsTable.$inferSelect;
 
@@ -64,41 +50,9 @@ export const patientTableColumns: ColumnDef<Patient>[] = [
         id: 'actions',
         cell: (params) => {
             const patient = params.row.original;
-
-            const deletePatientAction = useAction(deletePatient, {
-                onSuccess: () => {
-                    toast.success('Paciente deletado com sucesso!');
-                },
-                onError: () => {
-                    toast.error('Ocorreu um erro ao deletar o paciente');
-                },
-            });
-
-            const handleDeletePatientClick = () => {
-                if (!patient) return;
-                deletePatientAction.execute({ id: patient.id });
-            };
-
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size={'icon'}>
-                            <MoreVerticalIcon className={'h-4 w-4'} />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                        <DropdownMenuLabel>{patient.name}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem>
-                            <PenSquareIcon />
-                            Editar
-                        </DropdownMenuItem>
-                        <DropdownMenuItem>
-                            <TrashIcon />
-                            Deletar
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu >);
+                <PatientTableActions patient={patient} />
+            );
         }
     }
 ];
