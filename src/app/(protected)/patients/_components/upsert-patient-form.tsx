@@ -125,7 +125,7 @@ const UpsertPatientForm = ({
 							<FormItem>
 								<FormLabel>Email:</FormLabel>
 								<FormControl>
-									<Input type='email' {...field} placeholder='Informe o e-mail do paciente'/>
+									<Input type='email' {...field} placeholder='Informe o e-mail do paciente' />
 								</FormControl>
 								<FormMessage className='-mt-1 text-xs' />
 							</FormItem>
