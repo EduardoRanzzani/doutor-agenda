@@ -13,7 +13,7 @@ const AddDoctorButton = () => {
 			<DialogTrigger asChild>
 				<Button className='w-full md:w-60'>
 					<PlusIcon />
-					Novo Médico
+					Adicionar Médico
 				</Button>
 			</DialogTrigger>
 			<UpsertDoctorForm onSuccess={() => setIsOpen(false)} />
