@@ -134,10 +134,11 @@ export const patientsTableRelations = relations(
 export const appointmentsTable = pgTable('appointments', {
 	id: uuid('id').defaultRandom().primaryKey(),
 	date: timestamp('date').notNull(),
+	appointmentPriceInCents: integer('appointment_price_in_cents').notNull(),
 	clinicId: uuid('clinic_id')
 		.notNull()
 		.references(() => clinicsTable.id, { onDelete: 'cascade' }),
-	patiendId: uuid('patiend_id')
+	patientId: uuid('patient_id')
 		.notNull()
 		.references(() => patientsTable.id, { onDelete: 'cascade' }),
 	doctorId: uuid('doctor_id')
@@ -156,8 +157,8 @@ export const appointmentsTableRelations = relations(
 			fields: [appointmentsTable.clinicId],
 			references: [clinicsTable.id],
 		}),
-		patiend: one(patientsTable, {
-			fields: [appointmentsTable.patiendId],
+		patient: one(patientsTable, {
+			fields: [appointmentsTable.patientId],
 			references: [patientsTable.id],
 		}),
 		doctor: one(doctorsTable, {

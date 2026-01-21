@@ -1,6 +1,7 @@
 import { ThemeProvider } from '@/components/theme-provider';
 import './globals.css';
 
+import { ReactQueryProvider } from '@/providers/react-query';
 import type { Metadata } from 'next';
 import { Poppins } from 'next/font/google';
 import { Toaster } from 'sonner';
@@ -30,7 +31,7 @@ export default function RootLayout({
 					disableTransitionOnChange
 				>
 					<Toaster richColors position='bottom-center' />
-					{children}
+					<ReactQueryProvider>{children}</ReactQueryProvider>
 				</ThemeProvider>
 			</body>
 		</html>
