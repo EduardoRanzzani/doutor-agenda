@@ -7,9 +7,28 @@ import {
 	PageHeaderContent,
 	PageTitle,
 } from '@/components/ui/page-container';
-import AddDoctorButton from '../doctors/_components/add-doctor-button';
+import { db } from '@/db';
+import { patientsTable } from '@/db/schema';
+import { auth } from '@/lib/auth';
+import { asc, eq } from 'drizzle-orm';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import AddPatientButton from './_components/add-patient-button';
+import { PatientCard } from './_components/patient-card';
 
-const PatientsPage = () => {
+const PatientsPage = async () => {
+	const session = await auth.api.getSession({
+		headers: await headers()
+	})
+
+	if (!session?.user) redirect('/auth');
+	if (!session.user.clinic) redirect('/clinic-form');
+
+	const patients = await db.query.patientsTable.findMany({
+		where: eq(patientsTable.clinicId, session.user.clinic.id),
+		orderBy: asc(patientsTable.createdAt)
+	})
+
 	return (
 		<PageContainer>
 			<PageHeader>
@@ -20,11 +39,15 @@ const PatientsPage = () => {
 					</PageDescription>
 				</PageHeaderContent>
 				<PageActions>
-					<AddDoctorButton />
+					<AddPatientButton />
 				</PageActions>
 			</PageHeader>
 			<PageContent>
-				<h1>Pacientes</h1>
+				<div className='grid grid-cols-3 gap-6'>
+					{patients.map((patient) => (
+						<PatientCard key={patient.id} patient={patient} />
+					))}
+				</div>
 			</PageContent>
 		</PageContainer>
 	);

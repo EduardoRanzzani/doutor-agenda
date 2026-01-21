@@ -1,5 +1,5 @@
 'use client';
-import { deleteDoctor } from '@/actions/delete-doctor';
+import { deletePatient } from '@/actions/delete-patient';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -22,53 +22,48 @@ import {
 } from '@/components/ui/card';
 import { Dialog, DialogTrigger } from '@/components/ui/dialog';
 import { Separator } from '@/components/ui/separator';
-import { doctorsTable } from '@/db/schema';
-import { formatCurrencyInCents } from '@/helpers/currency';
+import { patientsTable } from '@/db/schema';
 import { AvatarFallback } from '@radix-ui/react-avatar';
 import {
 	BanIcon,
-	CalendarIcon,
 	CheckIcon,
-	ClockIcon,
-	DollarSignIcon,
 	EyeIcon,
+	PhoneIcon,
 	TrashIcon,
+	UserIcon
 } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { getAvailability } from '../_helpers/availability';
-import UpsertDoctorForm from './upsert-doctor-form';
+import UpsertPatientForm from './upsert-patient-form';
 
-interface DoctorCardProps {
-	doctor: typeof doctorsTable.$inferSelect;
+interface PatientsCardProps {
+	patient: typeof patientsTable.$inferSelect;
 }
 
-export const DoctorCard = ({ doctor }: DoctorCardProps) => {
-	const [isUpsertDoctorDialogOpen, setIsUpsertDoctorDialogOpen] =
+export const PatientCard = ({ patient }: PatientsCardProps) => {
+	const [isUpsertPatientsDialogOpen, setIsUpsertPatientsDialogOpen] =
 		useState<boolean>(false);
 
-	const names = doctor.name.trim().split(' ');
-	const doctorInitials = (
+	const names = patient.name.trim().split(' ');
+	const patientInitials = (
 		names.length > 1
 			? names[0][0] + names[names.length - 1][0]
 			: names[0][0]
 	).toUpperCase();
 
-	const availability = getAvailability(doctor);
-
-	const deleteDoctorAction = useAction(deleteDoctor, {
+	const deletePatientAction = useAction(deletePatient, {
 		onSuccess: () => {
-			toast.success('Médico deletado com sucesso!');
+			toast.success('Paciente deletado com sucesso!');
 		},
 		onError: () => {
-			toast.error('Ocorreu um erro ao deletar o médico');
+			toast.error('Ocorreu um erro ao deletar o paciente');
 		},
 	});
 
-	const handleDeleteDoctorClick = () => {
-		if (!doctor) return;
-		deleteDoctorAction.execute({ id: doctor.id });
+	const handleDeletePatientClick = () => {
+		if (!patient) return;
+		deletePatientAction.execute({ id: patient.id });
 	};
 
 	return (
@@ -76,12 +71,12 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
 			<CardHeader>
 				<div className='flex items-center justify-between gap-2'>
 					<Avatar className='bg-muted h-15 w-15 items-center justify-center'>
-						<AvatarFallback>{doctorInitials}</AvatarFallback>
+						<AvatarFallback>{patientInitials}</AvatarFallback>
 					</Avatar>
 					<div>
-						<h3 className='text-sm font-medium'>{doctor.name}</h3>
+						<h3 className='text-sm font-medium'>{patient.name}</h3>
 						<p className='text-muted-foreground text-center text-xs'>
-							{doctor.specialty}
+							{patient.email}
 						</p>
 					</div>
 
@@ -94,12 +89,12 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
 						<AlertDialogContent>
 							<AlertDialogHeader>
 								<AlertDialogTitle>
-									Tem certeza que deseja deletar esse médico?
+									Tem certeza que deseja deletar esse paciente?
 								</AlertDialogTitle>
 								<AlertDialogDescription>
 									Essa ação não pode ser revertida.
 									<br />
-									Isso irá deletar o médico e todas as
+									Isso irá deletar o paciente e todas as
 									consultas agendadas.
 								</AlertDialogDescription>
 							</AlertDialogHeader>
@@ -110,7 +105,7 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
 								</AlertDialogCancel>
 
 								<AlertDialogAction
-									onClick={handleDeleteDoctorClick}
+									onClick={handleDeletePatientClick}
 								>
 									<CheckIcon />
 									Deletar
@@ -123,40 +118,31 @@ export const DoctorCard = ({ doctor }: DoctorCardProps) => {
 			<Separator />
 			<CardContent className='flex flex-col gap-2'>
 				<Badge variant='outline'>
-					<CalendarIcon className='mr-1' />
-					{availability.from.format('dddd')} a{' '}
-					{availability.to.format('dddd')}
+					<PhoneIcon className='mr-1' />
+					{patient.phoneNumber}
 				</Badge>
 				<Badge variant={'outline'}>
-					<ClockIcon className='mr-1' />
-					{availability.from.format('HH:mm')} às{' '}
-					{availability.to.format('HH:mm')}
-				</Badge>
-				<Badge variant={'outline'}>
-					<DollarSignIcon className='mr-1' />
-					{formatCurrencyInCents(doctor.appointmentPriceInCents)}
+					<UserIcon className='mr-1' />
+					{patient.sex}
 				</Badge>
 			</CardContent>
 			<Separator />
 			<CardFooter>
 				<Dialog
-					open={isUpsertDoctorDialogOpen}
-					onOpenChange={setIsUpsertDoctorDialogOpen}
+					open={isUpsertPatientsDialogOpen}
+					onOpenChange={setIsUpsertPatientsDialogOpen}
 				>
 					<DialogTrigger asChild>
 						<Button className='w-full'>
 							<EyeIcon /> Ver detalhes
 						</Button>
 					</DialogTrigger>
-					<UpsertDoctorForm
-						key={`${doctor.id}-${doctor.updatedAt}`}
-						doctor={{
-							...doctor,
-							availableFromTime:
-								availability.from.format('HH:mm'),
-							availableToTime: availability.to.format('HH:mm'),
+					<UpsertPatientForm
+						key={`${patient.id}-${patient.updatedAt}`}
+						patient={{
+							...patient
 						}}
-						onSuccess={() => setIsUpsertDoctorDialogOpen(false)}
+						onSuccess={() => setIsUpsertPatientsDialogOpen(false)}
 					/>
 				</Dialog>
 			</CardFooter>

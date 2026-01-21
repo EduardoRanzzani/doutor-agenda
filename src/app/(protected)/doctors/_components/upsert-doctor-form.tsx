@@ -35,7 +35,6 @@ import { NumericFormat } from 'react-number-format';
 import { toast } from 'sonner';
 import { z } from 'zod';
 import { medicalSpecialties } from '../_constants';
-import { useEffect } from 'react';
 
 const formSchema = z
 	.object({
@@ -329,7 +328,7 @@ const UpsertDoctorForm = ({ onSuccess, doctor }: UpsertDoctorFormProps) => {
 							<FormItem>
 								<FormLabel>Nome:</FormLabel>
 								<FormControl>
-									<Input {...field} />
+									<Input {...field} placeholder='Informe o nome do Médico' />
 								</FormControl>
 								<FormMessage className='-mt-1 text-xs' />
 							</FormItem>
