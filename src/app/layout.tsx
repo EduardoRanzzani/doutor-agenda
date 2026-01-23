@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 	description: 'Sistema de gerenciamento e agendamento de consultas',
 };
 
+const defaultTheme = 'dark';
+
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -26,11 +28,11 @@ export default function RootLayout({
 			<body className={`${poppins.className} antialiased`}>
 				<ThemeProvider
 					attribute='class'
-					defaultTheme='light'
+					defaultTheme={defaultTheme}
 					enableSystem
 					disableTransitionOnChange
 				>
-					<Toaster richColors position='bottom-center' />
+					<Toaster richColors position='bottom-center' theme={defaultTheme} />
 					<ReactQueryProvider>{children}</ReactQueryProvider>
 				</ThemeProvider>
 			</body>

@@ -1,3 +1,4 @@
+import { DataTable } from '@/components/ui/data-table';
 import {
 	PageActions,
 	PageContainer,
@@ -14,6 +15,7 @@ import { asc, desc, eq } from 'drizzle-orm';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import AddAppointmentButton from './_components/add-appointment-button';
+import { appointmentTableColumns } from './_components/table-columns';
 
 const AppointmentsPage = async () => {
 	const session = await auth.api.getSession({
@@ -34,8 +36,12 @@ const AppointmentsPage = async () => {
 		}),
 		db.query.appointmentsTable.findMany({
 			where: eq(appointmentsTable.clinicId, session.user.clinic.id),
-			orderBy: desc(appointmentsTable.date)
-		})
+			orderBy: desc(appointmentsTable.date),
+			with: {
+				patient: true,
+				doctor: true,
+			},
+		}),
 	]);
 
 	return (
@@ -52,17 +58,7 @@ const AppointmentsPage = async () => {
 				</PageActions>
 			</PageHeader>
 			<PageContent>
-				<h1>Agendamentos</h1>
-
-				{appointments.map((appointment) => {
-					return (
-						<div key={appointment.id}>
-							<p>
-								{appointment.patientId} - {appointment.doctorId}
-							</p>
-						</div>
-					);
-				})}
+				<DataTable data={appointments} columns={appointmentTableColumns} />
 			</PageContent>
 		</PageContainer>
 	);
