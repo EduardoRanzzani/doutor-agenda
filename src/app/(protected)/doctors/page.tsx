@@ -43,11 +43,18 @@ const DoctorsPage = async () => {
 				</PageActions>
 			</PageHeader>
 			<PageContent>
-				<div className='grid grid-cols-3 gap-6'>
-					{doctors.map((doctor) => (
-						<DoctorCard key={doctor.id} doctor={doctor} />
-					))}
-				</div>
+
+				{doctors.length > 0 ? (
+					<div className='grid grid-cols-3 gap-6'>
+						{doctors.map((doctor) => (
+							<DoctorCard key={doctor.id} doctor={doctor} />
+						))}
+					</div>
+				) : (
+					<div className='flex w-full border rounded-lg p-4 justify-center'>
+						<p className='text-sm'>Nenhum resultado encontrado.</p>
+					</div>
+				)}
 			</PageContent>
 		</PageContainer>
 	);
