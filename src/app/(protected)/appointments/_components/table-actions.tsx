@@ -24,7 +24,6 @@ import { BanIcon, CheckIcon, MoreVerticalIcon, TrashIcon } from 'lucide-react';
 import { useAction } from 'next-safe-action/hooks';
 import { toast } from 'sonner';
 import type { Appointment } from './table-columns';
-import dayjs from 'dayjs';
 
 interface AppointmentTableActionsProps {
 	appointment: Appointment;
@@ -56,7 +55,7 @@ export const AppointmentTableActions = ({
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
 				<DropdownMenuLabel>
-					{appointment.patient.name} - {dayjs(appointment.date).format('DD/MM/YYYY [às] HH:mm')}
+					{appointment.patient.name}
 				</DropdownMenuLabel>
 				<DropdownMenuSeparator />
 				<AlertDialog>

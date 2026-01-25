@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 	description: 'Sistema de gerenciamento e agendamento de consultas',
 };
 
-const defaultTheme = 'dark';
+const defaultTheme = 'light';
 
 export default function RootLayout({
 	children,
